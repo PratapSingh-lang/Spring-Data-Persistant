@@ -3,6 +3,7 @@ package com.hibernetProject.hibernetProject.controller;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.hibernetProject.hibernetProject.entity.*;
+import com.hibernetProject.hibernetProject.service.UserResponse;
 import com.hibernetProject.hibernetProject.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -23,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/api")
 @Api(value = "users", description = "Operations related to users")
 public class UserController {
-
+      
     @Autowired
     private UserService userService;
 
@@ -55,25 +57,26 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
     
-    @ApiOperation(value = "Add a role to a user", response = User.class)
-    @PostMapping("/users/{userId}/role")
-    public ResponseEntity<User> addRoleToUser(@PathVariable Long userId, @RequestBody Role role) {
-        User updatedUser = userService.addRoleToUser(userId, role);
-        if (updatedUser == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedUser);
-    }
+	/*
+	 * @ApiOperation(value = "Add a role to a user", response = User.class)
+	 * 
+	 * @PostMapping("/users/{userId}/role") public ResponseEntity<User>
+	 * addRoleToUser(@PathVariable Long userId, @RequestBody Role role) { User
+	 * updatedUser = userService.addRoleToUser(userId, role); if (updatedUser ==
+	 * null) { return ResponseEntity.notFound().build(); } return
+	 * ResponseEntity.ok(updatedUser); }
+	 */
     
-    @ApiOperation(value = "Add a role to a user by role Id", response = User.class)
-    @PostMapping("/users/{userId}/{roleId}")
-    public ResponseEntity<User> addRoleToUserbyRoleId(@PathVariable Long userId, @PathVariable Long roleId) {
-        User updatedUser = userService.addRoleToUser(userId, roleId);
-        if (updatedUser == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedUser);
-    }
+	/*
+	 * @ApiOperation(value = "Add a role to a user by role Id", response =
+	 * User.class)
+	 * 
+	 * @PostMapping("/users/{userId}/{roleId}") public ResponseEntity<User>
+	 * addRoleToUserbyRoleId(@PathVariable Long userId, @PathVariable Long roleId) {
+	 * User updatedUser = userService.addRoleToUser(userId, roleId); if (updatedUser
+	 * == null) { return ResponseEntity.notFound().build(); } return
+	 * ResponseEntity.ok(updatedUser); }
+	 */
 
     @ApiOperation(value = "Update a user by ID", response = User.class)
     @PutMapping("/users/{id}")
@@ -172,41 +175,43 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     
-    @DeleteMapping("/users/{userId}/roles/{roleId}")
-    @ApiOperation(value = "Remove a role from a user")
-    public ResponseEntity<Void> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) {
-        User user = userService.removeRoleFromUser(userId, roleId);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().build();
-    }
+	/*
+	 * @DeleteMapping("/users/{userId}/roles/{roleId}")
+	 * 
+	 * @ApiOperation(value = "Remove a role from a user") public
+	 * ResponseEntity<Void> removeRoleFromUser(@PathVariable Long
+	 * userId, @PathVariable Long roleId) { User user =
+	 * userService.removeRoleFromUser(userId, roleId); if (user == null) { return
+	 * ResponseEntity.notFound().build(); } return ResponseEntity.ok().build(); }
+	 */
     
-    @PostMapping("/roles/{roleId}/privilege")
-    @ApiOperation(value = "Add a privilege to a role", response = Role.class)
-    public ResponseEntity<Role> addPrivilegeToRole(
-        @PathVariable Long roleId,
-        @RequestBody Privilege privilege
-    ) {
-        Role updatedRole = userService.addPrivilegeToRole(roleId, privilege);
-        if (updatedRole == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedRole);
-    }
+	/*
+	 * @PostMapping("/roles/{roleId}/privilege")
+	 * 
+	 * @ApiOperation(value = "Add a privilege to a role", response = Role.class)
+	 * public ResponseEntity<Role> addPrivilegeToRole(
+	 * 
+	 * @PathVariable Long roleId,
+	 * 
+	 * @RequestBody Privilege privilege ) { Role updatedRole =
+	 * userService.addPrivilegeToRole(roleId, privilege); if (updatedRole == null) {
+	 * return ResponseEntity.notFound().build(); } return
+	 * ResponseEntity.ok(updatedRole); }
+	 */
     
-    @DeleteMapping("/roles/{roleId}/privileges/{privilegeId}")
-    @ApiOperation(value = "Remove a privilege from a role", response = Role.class)
-    public ResponseEntity<Role> removePrivilegeFromRole(
-            @PathVariable Long roleId,
-            @PathVariable Long privilegeId
-    ) {
-        Role updatedRole = userService.removePrivilegeFromRole(roleId, privilegeId);
-        if (updatedRole == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedRole);
-    }
+	/*
+	 * @DeleteMapping("/roles/{roleId}/privileges/{privilegeId}")
+	 * 
+	 * @ApiOperation(value = "Remove a privilege from a role", response =
+	 * Role.class) public ResponseEntity<Role> removePrivilegeFromRole(
+	 * 
+	 * @PathVariable Long roleId,
+	 * 
+	 * @PathVariable Long privilegeId ) { Role updatedRole =
+	 * userService.removePrivilegeFromRole(roleId, privilegeId); if (updatedRole ==
+	 * null) { return ResponseEntity.notFound().build(); } return
+	 * ResponseEntity.ok(updatedRole); }
+	 */
     
     @ApiOperation(value = "Add List of roles to a user by user ID", notes = "Adds roles to a user by user ID")
     @ApiResponses(value = { 
@@ -222,34 +227,25 @@ public class UserController {
 		return ResponseEntity.ok(user);
     }
 
-//    @ApiOperation(value = "Add a list of privileges to a role by role ID and privilege IDs")
-//    @ApiResponses(value = {
-//        @ApiResponse(code = 200, message = "Privileges added to role successfully"),
-//        @ApiResponse(code = 404, message = "Role or privileges not found"),
-//        @ApiResponse(code = 500, message = "Internal server error")
-//    })
-//    @PostMapping("/roles/{roleId}/privileges")
-//    public ResponseEntity<Role> addPrivilegesToRole(
-//            @PathVariable Long roleId,
-//            @RequestBody List<Long> privilegeIds) {
-//    	Role role=userService.addPrivilegesToRole(roleId, privilegeIds);
-//    	
-//        Optional<Role> optionalRole = roleRepository.findById(roleId);
-//        if (optionalRole.isPresent()) {
-//            Role role = optionalRole.get();
-//            List<Privilege> privileges = privilegeRepository.findAllById(privilegeIds);
-//            if (!privileges.isEmpty()) {
-//                role.getPrivileges().addAll(privileges);
-//                roleRepository.save(role);
-//                return ResponseEntity.ok(role);
-//            } else {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Privileges not found");
-//            }
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found");
-//        }
-//    }
-    
+	/*
+	 * // @ApiOperation(value =
+	 * "Add a list of privileges to a role by role ID and privilege IDs")
+	 * // @ApiResponses(value = { // @ApiResponse(code = 200, message =
+	 * "Privileges added to role successfully"), // @ApiResponse(code = 404, message
+	 * = "Role or privileges not found"), // @ApiResponse(code = 500, message =
+	 * "Internal server error") // }) // @PostMapping("/roles/{roleId}/privileges")
+	 * // public ResponseEntity<Role> addPrivilegesToRole( // @PathVariable Long
+	 * roleId, // @RequestBody List<Long> privilegeIds) { // Role
+	 * role=userService.addPrivilegesToRole(roleId, privilegeIds); // //
+	 * Optional<Role> optionalRole = roleRepository.findById(roleId); // if
+	 * (optionalRole.isPresent()) { // Role role = optionalRole.get(); //
+	 * List<Privilege> privileges = privilegeRepository.findAllById(privilegeIds);
+	 * // if (!privileges.isEmpty()) { // role.getPrivileges().addAll(privileges);
+	 * // roleRepository.save(role); // return ResponseEntity.ok(role); // } else {
+	 * // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+	 * "Privileges not found"); // } // } else { // throw new
+	 * ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"); // } // }
+	 */    
     /**
      * Adds a list of privileges to a role by role ID and privilege IDs
      *
@@ -273,7 +269,53 @@ public class UserController {
         return userService.addPrivilegesToRole(roleId, privilegeIds);
     }
 
+    /**
+     * Adds a list of privileges to a role by role ID and privilege IDs
+     *
+     * @param roleId        ID of the role to add privileges to
+     * @param privilegeIds  IDs of the privileges to add to the role
+     * @return              The updated Role object with the added privileges
+     */
+    @ApiOperation(value = "Fetch information about Privileges assigned to a role", notes = "return a list of privileges assigned to a role ")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Privileges  to role fetched successfully"),
+        @ApiResponse(code = 400, message = "Invalid role or privilege ID(s) provided"),
+        @ApiResponse(code = 404, message = "Role or privilege(s) not found")
+    })
+    @GetMapping("/roles/{name}/privileges")
+    public ResponseEntity<Set<Privilege>> getPrivilegesForRole(@PathVariable("name") String roleName) {
+        Set<Privilege> privileges = userService.getPrivilegesForRole(roleName);
+        if (privileges != null) {
+            return ResponseEntity.ok(privileges);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    /**
+     * Adds a list of privileges to a role by role ID and privilege IDs
+     *
+     * @param roleId        ID of the role to add privileges to
+     * @param privilegeIds  IDs of the privileges to add to the role
+     * @return              The updated Role object with the added privileges
+     */
+    @ApiOperation(value = "Fetch information about Privileges assigned to a role based upon role id", notes = "return a list of privileges assigned to a role ")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Privileges  to role fetched successfully"),
+        @ApiResponse(code = 400, message = "Invalid role or privilege ID(s) provided"),
+        @ApiResponse(code = 404, message = "Role or privilege(s) not found")
+    })
+    @GetMapping("/{roleId}/privileges")
+    public Set<Privilege> getPrivilegesByRoleId(@PathVariable Long roleId) {
+        return userService.findPrivilegesByRoleId(roleId);
+    }
+    
+    
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
+    	ResponseEntity<UserResponse> userResponse= userService.findByUsernameWithRoles(username);
+		return userResponse;
+    }
 
-
+     
 }
 
